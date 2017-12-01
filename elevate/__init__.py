@@ -9,13 +9,24 @@ from builtins import str as text
 
 __version__ = '0.0.0'
 
-def elevate():
+def elevate(args=None):
     """Tries to rerun the current script with admin rights"""
 
     if not is_admin():
-        params = []
+        if args is None:
+            args = sys.argv
 
-        for arg in sys.argv:
+        runas(sys.executable, args)
+
+        return False
+
+    return True
+
+def runas(executable, args=None):
+    params = []
+
+    if args is not None:
+        for arg in args:
             if '"' in arg:
                 arg = '"' + arg.replace('"', r'\"') + '"'
             elif ' ' in arg:
@@ -23,14 +34,10 @@ def elevate():
 
             params.append(arg)
 
-        res = ctypes.windll.shell32.ShellExecuteW(None, "runas".encode('utf_16'), text(sys.executable).encode('utf_16'), text(' '.join(params)).encode('utf_16'), None, 1)
+    res = ctypes.windll.shell32.ShellExecuteW(None, "runas".encode('utf_16'), text(executable).encode('utf_16'), text(' '.join(params)).encode('utf_16'), None, 1)
 
-        if res <= 32:
-            raise WindowsError("ShellExecute returned error code %d" % res)
-
-        return False
-
-    return True
+    if res <= 32:
+        raise WindowsError("ShellExecute returned error code %d" % res)
 
 def is_admin():
     """Checks if the script is run with full admin rights"""
