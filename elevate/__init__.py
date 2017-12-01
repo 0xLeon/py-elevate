@@ -34,7 +34,7 @@ def runas(executable, args=None):
 
             params.append(arg)
 
-    res = ctypes.windll.shell32.ShellExecuteW(None, "runas".encode('utf_16'), text(executable).encode('utf_16'), text(' '.join(params)).encode('utf_16'), None, 1)
+    res = ctypes.windll.shell32.ShellExecuteW(None, "runas", text(executable), text(' '.join(params), None, 1)
 
     if res <= 32:
         raise WindowsError("ShellExecute returned error code %d" % res)
