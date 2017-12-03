@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 
 import ctypes
 import sys
+
 from builtins import str as text
 
 __version__ = '0.0.0'
